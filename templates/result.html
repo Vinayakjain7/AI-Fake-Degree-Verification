@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Verification Result</title>
+    <style>
+        body { font-family: Arial; background:#f4f6f9; padding:30px; transition:0.3s;}
+        .container { background:white; padding:25px; border-radius:10px;
+            box-shadow:0 0 15px rgba(0,0,0,0.1); animation:fadeIn 0.6s;}
+        .green{color:green;font-weight:bold;}
+        .orange{color:orange;font-weight:bold;}
+        .red{color:red;font-weight:bold;}
+        .progress-container{width:100%;background:#ddd;border-radius:20px;}
+        .progress-bar{height:20px;border-radius:20px;}
+        .toggle-btn{position:absolute;top:20px;right:20px;}
+        img{max-width:100%;border-radius:10px;margin-top:15px;}
+
+        @keyframes fadeIn{
+            from{opacity:0;transform:translateY(20px);}
+            to{opacity:1;transform:translateY(0);}
+        }
+
+        .dark-mode{background:#121212 !important;color:#f5f5f5 !important;}
+        .dark-mode .container{background:#1e1e1e !important;}
+    </style>
+</head>
+
+<body>
+
+<button class="toggle-btn" onclick="toggleDarkMode()">🌙</button>
+
+<div class="container">
+    <h1>Verification Result</h1>
+
+    <h3>Extracted Data:</h3>
+    <ul>
+        {% for key,value in extracted_data.items() %}
+        <li><strong>{{ key }}:</strong> {{ value }}</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Database:
+        {% if verified %}
+        <span class="green">Verified ✔</span>
+        {% else %}
+        <span class="red">Mismatch ❌</span>
+        {% endif %}
+    </h3>
+
+    <h3>Tampering Score: {{ tampering_score }}</h3>
+    <h3>Authenticity Score: {{ final_score }}</h3>
+
+    <div class="progress-container">
+        {% if final_score >= 80 %}
+        <div class="progress-bar" style="width:{{score_width}};background:green;"></div>
+        {% elif final_score >= 50 %}
+        <div class="progress-bar" style="width:{{score_width}};background:orange;"></div>
+        {% else %}
+        <div class="progress-bar" style="width:{{score_width}};background:red;"></div>
+        {% endif %}
+    </div>
+
+    <h3>Status:
+        {% if status == "Highly Authentic" %}
+        <span class="green">{{status}}</span>
+        {% elif status == "Likely Authentic" %}
+        <span class="orange">{{status}}</span>
+        {% else %}
+        <span class="red">{{status}}</span>
+        {% endif %}
+    </h3>
+
+    <h3>ELA Image:</h3>
+    <img src="/{{ela_image}}">
+
+    <br><br>
+    <a href="/">Verify Another</a>
+</div>
+
+<script>
+function toggleDarkMode(){
+document.body.classList.toggle("dark-mode");
+localStorage.setItem("theme",
+document.body.classList.contains("dark-mode")?"dark":"light");
+}
+window.onload=function(){
+if(localStorage.getItem("theme")==="dark"){
+document.body.classList.add("dark-mode");
+}};
+</script>
+
+</body>
+</html>
