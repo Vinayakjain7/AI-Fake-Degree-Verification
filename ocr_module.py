@@ -1,28 +1,22 @@
-import easyocr
+import pytesseract
 import cv2
 
-reader = None
-
-def get_reader():
-    global reader
-    if reader is None:
-        reader = easyocr.Reader(['en'])
-    return reader
-
+# IMPORTANT for Render
+pytesseract.pytesseract.tesseract_cmd = "/usr/bin/tesseract"
 
 def process_certificate(image_path):
-    reader = get_reader()
+    img = cv2.imread(image_path)
 
-    results = reader.readtext(image_path)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-    extracted_text = " ".join([res[1] for res in results])
+    text = pytesseract.image_to_string(gray)
 
     return {
-        "extracted_data": extracted_text,
+        "extracted_data": text,
         "verified": False,
         "tampering_score": 0,
         "final_score": 50,
-        "status": "Demo Mode",
-        "remarks": "OCR working",
+        "status": "OCR Extracted",
+        "remarks": "Using Tesseract OCR",
         "ela_image": image_path
     }
